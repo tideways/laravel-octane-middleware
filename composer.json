@@ -1,0 +1,12 @@
+{
+    "name": "tideways/laravel-octane-middleware",
+    "description": "Integrates with Laravel Octane for Tideways PHP Monitoring, Profiling, Exception-Tracking",
+    "license": "MIT",
+    "homepage": "https://github.com/tideways/laravel-octane-middleware",
+    "require": {
+        "laravel/octane": ">=0.1.0,<1.0"
+    },
+    "autoload": {
+        "psr-4": {"Tideways\\LaravelOctane\\": "src/"}
+    }
+}
