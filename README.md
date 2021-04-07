@@ -39,6 +39,11 @@ More details on how to install and get the API Key in the Tideways docs:
 
 https://support.tideways.com/documentation/setup/installation/api-key.html
 
+## Known Issues
+
+* Triggering traces via Chrome Extension requires Tideways PHP Extension version 5.3.16 and up
+* Laravel framework spans and events in Profiler require Tideways PHP Extension version 5.3.16 and up
+
 ## License
 
 The MIT License (MIT). Please see License File for more information.
