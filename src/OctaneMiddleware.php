@@ -27,7 +27,7 @@ class OctaneMiddleware
         } else if ($request->headers->has('X-TIDEWAYS-PROFILER')) {
             $developerSession = $request->headers->get('X-TIDEWAYS-PROFILER');
         } else if ($request->cookies->has('TIDEWAYS_SESSION')) {
-            $developerSession = $request->cookies->get('TIDEWAYS_SESSION')->getValue();
+            $developerSession = $request->cookies->get('TIDEWAYS_SESSION');
         }
 
         $service = ini_get('tideways.service') ?: 'web';
