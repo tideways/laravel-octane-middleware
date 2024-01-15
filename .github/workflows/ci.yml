@@ -1,0 +1,41 @@
+name: PHP / Tests
+
+on: push
+
+jobs:
+  phpunit:
+    name: "phpunit"
+    runs-on: "ubuntu-20.04"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        phpVersion:
+          - "8.2"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          php-version: "${{ matrix.phpVersion }}"
+          tools: "cs2pr"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Install Tideways"
+        run: |
+          echo 'deb [signed-by=/usr/share/keyrings/tideways.gpg] https://packages.tideways.com/apt-packages-main any-version main' | sudo tee /etc/apt/sources.list.d/tideways.list > /dev/null
+          wget -qO - 'https://packages.tideways.com/key.gpg' | gpg --dearmor | sudo tee /usr/share/keyrings/tideways.gpg > /dev/null
+          sudo apt-get update
+          sudo apt-get install tideways-php
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v2"
+
+      - name: "Run PHPUnit"
+        run: "php vendor/bin/phpunit"
+

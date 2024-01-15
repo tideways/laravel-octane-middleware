@@ -4,6 +4,7 @@ namespace Tideways\LaravelOctane;
 
 use Closure;
 use Illuminate\Http\Request;
+use Throwable;
 
 class OctaneMiddleware
 {
