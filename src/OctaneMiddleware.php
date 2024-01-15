@@ -37,6 +37,10 @@ class OctaneMiddleware
         \Tideways\Profiler::setCustomVariable('http.method', $request->getMethod());
         \Tideways\Profiler::setCustomVariable('http.url', $request->getPathInfo());
 
+        if (class_exists('Tideways\Profiler', 'markAsWebTransaction')) {
+            \Tideways\Profiler::markAsWebTransaction();
+        }
+
         $referenceId = $request->query->get('_tideways_ref', $request->headers->get('X-Tideways-Ref'));
         if ($request->cookies->has('TIDEWAYS_REF')) {
             $referenceId = $request->cookies->get('TIDEWAYS_REF')->getValue();
