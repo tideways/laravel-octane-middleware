@@ -43,7 +43,7 @@ class OctaneMiddleware
 
         $referenceId = $request->query->get('_tideways_ref', $request->headers->get('X-Tideways-Ref'));
         if ($request->cookies->has('TIDEWAYS_REF')) {
-            $referenceId = $request->cookies->get('TIDEWAYS_REF')->getValue();
+            $referenceId = $request->cookies->get('TIDEWAYS_REF');
         }
 
         if ($referenceId) {
