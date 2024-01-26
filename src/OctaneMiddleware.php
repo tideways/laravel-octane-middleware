@@ -38,7 +38,7 @@ class OctaneMiddleware
         \Tideways\Profiler::setCustomVariable('http.method', $request->getMethod());
         \Tideways\Profiler::setCustomVariable('http.url', $request->getPathInfo());
 
-        if (class_exists('Tideways\Profiler', 'markAsWebTransaction')) {
+        if (method_exists('Tideways\Profiler', 'markAsWebTransaction')) {
             \Tideways\Profiler::markAsWebTransaction();
         }
 
