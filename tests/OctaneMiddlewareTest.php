@@ -16,8 +16,6 @@ class OctaneMiddlewareTest extends TestCase
             $this->markTestSkipped('Tideways\Profiler is not installed.');
         }
 
-        $this->assertEquals('basic', ini_get('tideways.monitor'));
-
         \Tideways\Profiler::stop();
     }
 
@@ -46,9 +44,12 @@ function withTideawysDaemon(\Closure $callback = null, $flags = 0)
 {
     $callback = $callback ?: function() {};
     $address = "tcp://127.0.0.1:64111";
-    ini_set("tideways.connection", $address);
+    ini_set('tideways.connection', $address);
     ini_set('tideways.api_key', 'abcdefg');
     ini_set('tideways.sample_rate', 0);
+    ini_set('tideways.monitor', 'basic');
+    putenv('TIDEWAYS_CONNECTION=' . $address);
+    $_SERVER['TIDEWAYS_CONNECTION'] = $address;
     if (ini_get("tideways.connection") !== $address) {
         throw new \RuntimeException('Could not set tideways.connection to ' . $address);
     }

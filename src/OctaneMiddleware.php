@@ -17,8 +17,8 @@ class OctaneMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!class_exists('Tideways\Profiler') || php_sapi_name() !== 'cli') {
-            // only run when Tideways is installed and the CLI sapi is used (thats how Swoole/RR work)
+        if (!class_exists('Tideways\Profiler') || !in_array(php_sapi_name(), ['cli', 'frankenphp'], true)) {
+            // only run when Tideways is installed and the CLI/frankenphp sapi is used (thats how Swoole/RR work)
             return $next($request);
         }
 
@@ -38,7 +38,7 @@ class OctaneMiddleware
         \Tideways\Profiler::setCustomVariable('http.method', $request->getMethod());
         \Tideways\Profiler::setCustomVariable('http.url', $request->getPathInfo());
 
-        if (class_exists('Tideways\Profiler', 'markAsWebTransaction')) {
+        if (method_exists('Tideways\Profiler', 'markAsWebTransaction')) {
             \Tideways\Profiler::markAsWebTransaction();
         }
 
