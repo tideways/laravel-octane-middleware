@@ -12,15 +12,3 @@ updates:
       interval: "weekly"
       day: "wednesday"
       time: "12:00"
-    allow:
-      dependency-type: "production"
-    versioning-strategy: widen
-  - package-ecosystem: "composer"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "wednesday"
-      time: "12:00"
-    allow:
-      dependency-type: "development"
-    versioning-strategy: increase
