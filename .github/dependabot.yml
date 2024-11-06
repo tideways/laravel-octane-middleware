@@ -12,3 +12,6 @@ updates:
       interval: "weekly"
       day: "wednesday"
       time: "12:00"
+    allow:
+      dependency-type: "development"
+    versioning-strategy: increase
