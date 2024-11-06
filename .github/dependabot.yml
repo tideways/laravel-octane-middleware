@@ -13,5 +13,5 @@ updates:
       day: "wednesday"
       time: "12:00"
     allow:
-      dependency-type: "development"
+      - dependency-type: "development"
     versioning-strategy: increase
