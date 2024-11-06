@@ -5,6 +5,8 @@ namespace Tideways\LaravelOctane;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Process;
 
 class OctaneMiddlewareTest extends TestCase
 {
@@ -53,35 +55,35 @@ function withTideawysDaemon(\Closure $callback = null, $flags = 0)
     if (ini_get("tideways.connection") !== $address) {
         throw new \RuntimeException('Could not set tideways.connection to ' . $address);
     }
-    $server = @stream_socket_server($address, $error);
-    if (!$server) {
-        throw new \RuntimeException('Unable to create AF_INET socket [server]: Already running on ' . $address);
+
+    $phpBinaryFinder = new PhpExecutableFinder();
+    $daemon = new Process([
+        $phpBinaryFinder->find(),
+        __DIR__ . '/daemon.inc',
+        $address,
+    ]);
+    $daemon->setTimeout(1);
+    $daemon->start();
+
+    $i = 0;
+    while (($i++ < 30) && !($fp = @stream_socket_client($address, $errno, $errstr, 1))) {
+        usleep(10000);
+    }
+    if ($fp) {
+        fwrite($fp, json_encode(['type' => 'ping']));
+        fclose($fp);
+    } else {
+        $daemon->stop();
+        throw new \Exception('Daemon did not start properly.');
     }
 
     try {
         $callback();
-    } catch (InvalidArgumentException $e) {
-        // ignore
-    }
-    \Tideways\Profiler::stop();
+    } catch (\Throwable) {
 
-    /* Accept that connection */
-    $socket = stream_socket_accept($server, 1);
-    if (!$socket) {
-        throw new \RuntimeException('Unable to accept connection');
     }
 
-    $response = '';
-    do {
-        $response .= fread($socket, 65355);
-    } while (!feof($socket));
+    $daemon->wait();
 
-    fclose($socket);
-    fclose($server);
-
-    $data = json_decode($response, true);
-
-    if (isset($data['payload'])) {
-        return $data['payload'];
-    }
+    return json_decode($daemon->getOutput(), true, flags: JSON_THROW_ON_ERROR);
 }
