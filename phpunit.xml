@@ -14,7 +14,7 @@
       <directory>tests</directory>
     </testsuite>
   </testsuites>
-  <source restrictNotices="true" restrictWarnings="true" ignoreIndirectDeprecations="true">
+  <source>
     <include>
       <directory>src</directory>
     </include>

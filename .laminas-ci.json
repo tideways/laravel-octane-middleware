@@ -1,0 +1,11 @@
+{
+    "exclude": [
+        {
+            "name": "README Linting"
+        },
+        {
+            "name": "PHPUnit",
+            "php": "8.0"
+        }
+    ]
+}
