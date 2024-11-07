@@ -5,12 +5,14 @@ on: push
 jobs:
   phpunit:
     name: "phpunit"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
 
     strategy:
       fail-fast: false
       matrix:
         phpVersion:
+          - "8.4"
+          - "8.3"
           - "8.2"
 
     steps:
