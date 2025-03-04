@@ -7,6 +7,10 @@
         "php": "^8.0",
         "illuminate/http": "~8 || ~9 || ~10 || ~11 || ~12"
     },
+    "suggest": {
+        "ext-tideways": "This package will not do anything if Tideways is not installed.",
+        "laravel/octane": "This middleware is intended to be used with Laravel Octane."
+    },
     "autoload": {
         "psr-4": {"Tideways\\LaravelOctane\\": "src/"}
     },
