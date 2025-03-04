@@ -23,7 +23,7 @@ class OctaneMiddlewareTest extends TestCase
 
     public function testMiddleware(): void
     {
-        $payload = withTideawysDaemon(function () {
+        $payload = withTidewaysDaemon(function () {
             $request = Request::create('/', 'GET');
             $request->cookies->set('TIDEWAYS_SESSION', 'foo');
             $request->cookies->set('TIDEWAYS_REF', 'bar');
@@ -42,7 +42,7 @@ class OctaneMiddlewareTest extends TestCase
     }
 }
 
-function withTideawysDaemon(\Closure $callback = null, $flags = 0)
+function withTidewaysDaemon(\Closure $callback)
 {
     $callback = $callback ?: function() {};
     $address = "tcp://127.0.0.1:64111";
