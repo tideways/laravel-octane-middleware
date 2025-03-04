@@ -5,7 +5,7 @@
     "homepage": "https://github.com/tideways/laravel-octane-middleware",
     "require": {
         "php": "^8.0",
-        "illuminate/http": "~8 || ~9 || ~10 || ~11"
+        "illuminate/http": "~8 || ~9 || ~10 || ~11 || ~12"
     },
     "autoload": {
         "psr-4": {"Tideways\\LaravelOctane\\": "src/"}
