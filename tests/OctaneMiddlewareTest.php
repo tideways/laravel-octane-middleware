@@ -44,7 +44,6 @@ class OctaneMiddlewareTest extends TestCase
 
 function withTidewaysDaemon(\Closure $callback)
 {
-    $callback = $callback ?: function() {};
     $address = "tcp://127.0.0.1:64111";
     ini_set('tideways.connection', $address);
     ini_set('tideways.api_key', 'abcdefg');
