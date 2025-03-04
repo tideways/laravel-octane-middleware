@@ -13,5 +13,8 @@
     "require-dev": {
         "phpunit/phpunit": "^11.5.2",
         "symfony/process": "^7.2.0"
+    },
+    "config": {
+        "sort-packages": true
     }
 }
