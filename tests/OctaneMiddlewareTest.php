@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
+use Throwable;
 
 final class OctaneMiddlewareTest extends TestCase
 {
@@ -65,7 +66,7 @@ final class OctaneMiddlewareTest extends TestCase
 
        $this->assertEquals(InvalidArgumentException::class, $payload[1]['a']['error.type']);
 
-       $this->assertNotNull($exception);
+       $this->assertInstanceOf(Throwable::class, $exception);
     }
 
     public function testTidewaysQueryIsValid(): void
