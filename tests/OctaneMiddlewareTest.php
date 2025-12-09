@@ -10,7 +10,7 @@ use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
-class OctaneMiddlewareTest extends TestCase
+final class OctaneMiddlewareTest extends TestCase
 {
     public function setUp(): void
     {
@@ -23,19 +23,40 @@ class OctaneMiddlewareTest extends TestCase
         \Tideways\Profiler::stop();
     }
 
-    public function testMiddleware(): void
+    public function testTidewaysSessionCookieIsValid(): void
     {
         $payload = withTidewaysDaemon(function () {
             $request = Request::create('/', 'GET');
-            $request->cookies->set('TIDEWAYS_SESSION', 'foo');
+            $request->cookies->set('TIDEWAYS_SESSION', 'method=&user=foo&time=2145913200&hash=8627e21a5dd6bc1f97106b61c2b8d914147f207cc4c00d65592ec6463fd93583');
             $request->cookies->set('TIDEWAYS_REF', 'bar');
+
+            $middleware = new OctaneMiddleware();
+            $middleware->handle($request, function () {
+                return new Response(\Tideways\Profiler::isProfiling() ? 'valid' : 'invalid');
+            });
+
+            $this->assertEquals('valid', $response->getContent());
+        }, function (\Throwable $e) {
+            // ignore
+        });
+
+       $this->assertEquals('foo', $payload[0]['a']['tw.uid']);
+       $this->assertEquals('cli', $payload[0]['a']['php.sapi']);
+    }
+
+    public function testException(): void
+    {
+        $exception = null;
+
+        $payload = withTidewaysDaemon(function () {
+            $request = Request::create('/', 'GET');
 
             $middleware = new OctaneMiddleware();
             $middleware->handle($request, function () {
                 throw new InvalidArgumentException('failing');
             });
-        }, function (\Throwable $e) {
-            // ignore
+        }, function (\Throwable $e) use (&$exception) {
+            $exception = $e;
         });
 
        $this->assertCount(2, $payload);
@@ -43,6 +64,8 @@ class OctaneMiddlewareTest extends TestCase
        $this->assertEquals('cli', $payload[0]['a']['php.sapi']);
 
        $this->assertEquals(InvalidArgumentException::class, $payload[1]['a']['error.type']);
+
+       $this->assertNotNull($exception);
     }
 
     public function testTidewaysQueryIsValid(): void
