@@ -47,12 +47,19 @@ class OctaneMiddleware
             \Tideways\Profiler::markAsWebTransaction();
         }
 
-        $referenceId = $request->query->get('_tideways_ref', $request->headers->get('X-Tideways-Ref'));
-        if ($request->cookies->has('TIDEWAYS_REF')) {
-            $referenceId = $request->cookies->get('TIDEWAYS_REF');
+        $referenceId = $request->cookies->get('TIDEWAYS_REF');
+        if ($referenceId === null) {
+            try {
+                $referenceId = $request->query->get('_tideways_ref');
+            } catch (BadRequestException) {
+                // The query was not an scalar.
+            }
+        }
+        if ($referenceId === null) {
+            $referenceId = $request->headers->get('X-Tideways-Ref');
         }
 
-        if ($referenceId) {
+        if ($referenceId !== null) {
             \Tideways\Profiler::setCustomVariable('tw.ref', $referenceId);
         }
 

@@ -118,6 +118,23 @@ final class OctaneMiddlewareTest extends TestCase
         $this->assertNull($payload[0]['a']['tw.uid']);
         $this->assertEquals('cli', $payload[0]['a']['php.sapi']);
     }
+
+    public function testTidewaysRefQueryIsIncorrectType(): void
+    {
+        $payload = withTidewaysDaemon(function () {
+            $request = Request::create('/?_tideways_ref[]=array', 'GET');
+
+            $middleware = new OctaneMiddleware();
+            $response = $middleware->handle($request, function () {
+                return new Response();
+            });
+
+            $this->assertEquals(200, $response->getStatusCode());
+        });
+
+        $this->assertNull($payload[0]['a']['tw.uid']);
+        $this->assertEquals('cli', $payload[0]['a']['php.sapi']);
+    }
 }
 
 function withTidewaysDaemon(\Closure $callback, ?\Closure $onError = null)
