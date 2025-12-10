@@ -4,6 +4,7 @@ namespace Tideways\LaravelOctane;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Throwable;
 
 class OctaneMiddleware
@@ -24,7 +25,11 @@ class OctaneMiddleware
 
         $developerSession = null;
         if ($request->query->has('_tideways')) {
-            $developerSession = http_build_query((array) $request->query->get('_tideways'));
+            try {
+                $developerSession = http_build_query($request->query->all('_tideways'));
+            } catch (BadRequestException) {
+                // The query was not an array.
+            }
         } else if ($request->headers->has('X-TIDEWAYS-PROFILER')) {
             $developerSession = $request->headers->get('X-TIDEWAYS-PROFILER');
         } else if ($request->cookies->has('TIDEWAYS_SESSION')) {
@@ -42,12 +47,19 @@ class OctaneMiddleware
             \Tideways\Profiler::markAsWebTransaction();
         }
 
-        $referenceId = $request->query->get('_tideways_ref', $request->headers->get('X-Tideways-Ref'));
-        if ($request->cookies->has('TIDEWAYS_REF')) {
-            $referenceId = $request->cookies->get('TIDEWAYS_REF');
+        $referenceId = $request->cookies->get('TIDEWAYS_REF');
+        if ($referenceId === null) {
+            try {
+                $referenceId = $request->query->get('_tideways_ref');
+            } catch (BadRequestException) {
+                // The query was not a scalar.
+            }
+        }
+        if ($referenceId === null) {
+            $referenceId = $request->headers->get('X-Tideways-Ref');
         }
 
-        if ($referenceId) {
+        if ($referenceId !== null) {
             \Tideways\Profiler::setCustomVariable('tw.ref', $referenceId);
         }
 
