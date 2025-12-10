@@ -52,7 +52,7 @@ class OctaneMiddleware
             try {
                 $referenceId = $request->query->get('_tideways_ref');
             } catch (BadRequestException) {
-                // The query was not an scalar.
+                // The query was not a scalar.
             }
         }
         if ($referenceId === null) {
