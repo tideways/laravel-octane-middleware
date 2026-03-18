@@ -37,7 +37,7 @@ jobs:
           sudo apt-get install tideways-php
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
 
       - name: "Run PHPUnit"
         run: "php vendor/bin/phpunit"
