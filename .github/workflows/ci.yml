@@ -9,17 +9,29 @@ permissions:
 
 jobs:
   phpunit:
-    name: "phpunit"
+    name: "PHP ${{ matrix.phpVersion }} / Laravel ${{ matrix.laravelVersion }}"
     runs-on: "ubuntu-24.04"
 
     strategy:
       fail-fast: false
       matrix:
-        phpVersion:
-          - "8.5"
-          - "8.4"
-          - "8.3"
-          - "8.2"
+        include:
+          - phpVersion: "8.2"
+            laravelVersion: "8.*"
+          - phpVersion: "8.2"
+            laravelVersion: "9.*"
+          - phpVersion: "8.2"
+            laravelVersion: "10.*"
+          - phpVersion: "8.2"
+            laravelVersion: "11.*"
+          - phpVersion: "8.2"
+            laravelVersion: "12.*"
+          - phpVersion: "8.3"
+            laravelVersion: "12.*"
+          - phpVersion: "8.4"
+            laravelVersion: "12.*"
+          - phpVersion: "8.5"
+            laravelVersion: "12.*"
 
     steps:
       - name: "Checkout"
@@ -42,8 +54,10 @@ jobs:
           sudo apt-get install tideways-php
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v4"
+        run: |
+          composer update \
+            "illuminate/*:${{ matrix.laravelVersion }}" \
+            --with-all-dependencies
 
       - name: "Run PHPUnit"
         run: "php vendor/bin/phpunit"
-
