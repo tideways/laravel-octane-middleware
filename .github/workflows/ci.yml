@@ -27,11 +27,11 @@ jobs:
           - phpVersion: "8.2"
             laravelVersion: "12.*"
           - phpVersion: "8.3"
-            laravelVersion: "12.*"
+            laravelVersion: "13.*"
           - phpVersion: "8.4"
-            laravelVersion: "12.*"
+            laravelVersion: "13.*"
           - phpVersion: "8.5"
-            laravelVersion: "12.*"
+            laravelVersion: "13.*"
 
     steps:
       - name: "Checkout"
