@@ -32,7 +32,7 @@ final class OctaneMiddlewareTest extends TestCase
             $request->cookies->set('TIDEWAYS_REF', 'bar');
 
             $middleware = new OctaneMiddleware();
-            $middleware->handle($request, function () {
+            $response = $middleware->handle($request, function () {
                 return new Response(\Tideways\Profiler::isProfiling() ? 'valid' : 'invalid');
             });
 
