@@ -37,8 +37,6 @@ final class OctaneMiddlewareTest extends TestCase
             });
 
             $this->assertEquals('valid', $response->getContent());
-        }, function (\Throwable $e) {
-            // ignore
         });
 
        $this->assertEquals('foo', $payload[0]['a']['tw.uid']);
