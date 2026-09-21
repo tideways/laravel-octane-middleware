@@ -47,12 +47,25 @@ class OctaneMiddleware
             \Tideways\Profiler::markAsWebTransaction();
         }
 
-        $referenceId = $request->cookies->get('TIDEWAYS_REF');
+        try {
+            $referenceId = $request->cookies->get('TIDEWAYS_REF');
+        } catch (BadRequestException) {
+            $referenceId = null;
+        }
+        if (!is_scalar($referenceId)) {
+            $referenceId = null;
+        }
+
         if ($referenceId === null) {
             try {
                 $referenceId = $request->query->get('_tideways_ref');
             } catch (BadRequestException) {
                 // The query was not a scalar.
+            }
+
+            if (!is_scalar($referenceId)) {
+                // Older Symfony versions return non-scalar values instead of throwing.
+                $referenceId = null;
             }
         }
         if ($referenceId === null) {
