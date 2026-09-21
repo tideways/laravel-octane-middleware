@@ -2,6 +2,9 @@ name: PHP / Tests
 
 on: push
 
+permissions:
+  contents: read
+
 jobs:
   phpunit:
     name: "phpunit"
