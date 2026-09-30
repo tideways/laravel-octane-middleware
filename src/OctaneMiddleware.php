@@ -19,8 +19,8 @@ class OctaneMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (
-            !class_exists(\Tideways\Profiler::class)
-            || !in_array(php_sapi_name(), ['cli', 'frankenphp'], true)
+            !\class_exists(\Tideways\Profiler::class)
+            || !\in_array(\php_sapi_name(), ['cli', 'frankenphp'], true)
         ) {
             // only run when Tideways is installed and the CLI/frankenphp sapi is used (thats how Swoole/RR work)
             return $next($request);
@@ -29,7 +29,7 @@ class OctaneMiddleware
         $developerSession = null;
         if ($request->query->has('_tideways')) {
             try {
-                $developerSession = http_build_query($request->query->all('_tideways'));
+                $developerSession = \http_build_query($request->query->all('_tideways'));
             } catch (BadRequestException) {
                 // The query was not an array.
             }
@@ -39,14 +39,14 @@ class OctaneMiddleware
             $developerSession = $request->cookies->get('TIDEWAYS_SESSION');
         }
 
-        $service = ini_get('tideways.service') ?: 'web';
+        $service = \ini_get('tideways.service') ?: 'web';
 
         \Tideways\Profiler::start(['service' => $service, 'developer_session' => $developerSession]);
         \Tideways\Profiler::setCustomVariable('http.host', $request->getHttpHost());
         \Tideways\Profiler::setCustomVariable('http.method', $request->getMethod());
         \Tideways\Profiler::setCustomVariable('http.url', $request->getPathInfo());
 
-        if (method_exists(\Tideways\Profiler::class, 'markAsWebTransaction')) {
+        if (\method_exists(\Tideways\Profiler::class, 'markAsWebTransaction')) {
             \Tideways\Profiler::markAsWebTransaction();
         }
 
@@ -55,7 +55,7 @@ class OctaneMiddleware
         } catch (BadRequestException) {
             $referenceId = null;
         }
-        if (!is_scalar($referenceId)) {
+        if (!\is_scalar($referenceId)) {
             $referenceId = null;
         }
 
@@ -66,7 +66,7 @@ class OctaneMiddleware
                 // The query was not a scalar.
             }
 
-            if (!is_scalar($referenceId)) {
+            if (!\is_scalar($referenceId)) {
                 // Older Symfony versions return non-scalar values instead of throwing.
                 $referenceId = null;
             }
