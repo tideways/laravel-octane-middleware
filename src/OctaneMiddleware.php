@@ -19,10 +19,20 @@ class OctaneMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (
+            // If Tideways is not installed we cannot do anything meaningful.
             !\class_exists(\Tideways\Profiler::class)
+            // Allowlist supported "worker-style" SAPIs (cli for Swoole / RoadRunner, frankenphp for FrankenPHP).
             || !\in_array(\PHP_SAPI, ['cli', 'frankenphp'], true)
+            || (
+                // Tideways 5.34.0+ supports automated worker mode instrumentation for FrankenPHP,
+                // making this Middleware useless. We're not checking for the corresponding feature
+                // flags, since it's likely that there is a reason for a customer to disable FrankenPHP
+                // or worker mode instrumentation - e.g. during debugging sessions - then reenabling
+                // the middleware would come as a surprise and would go against the customer's intent.
+                \PHP_SAPI === 'frankenphp'
+                && \version_compare(\phpversion('tideways'), '5.34.0') >= 0
+            )
         ) {
-            // only run when Tideways is installed and the CLI/frankenphp sapi is used (thats how Swoole/RR work)
             return $next($request);
         }
 
