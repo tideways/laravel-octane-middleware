@@ -20,7 +20,7 @@ class OctaneMiddleware
     {
         if (
             !\class_exists(\Tideways\Profiler::class)
-            || !\in_array(\php_sapi_name(), ['cli', 'frankenphp'], true)
+            || !\in_array(\PHP_SAPI, ['cli', 'frankenphp'], true)
         ) {
             // only run when Tideways is installed and the CLI/frankenphp sapi is used (thats how Swoole/RR work)
             return $next($request);
