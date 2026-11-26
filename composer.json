@@ -16,7 +16,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5.58",
-        "symfony/process": "^7.4.24"
+        "symfony/process": "^8.1.10"
     },
     "config": {
         "sort-packages": true
